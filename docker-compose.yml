@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgis/postgis:15-3.3
+    container_name: nocmon_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: nocmon_user
+      POSTGRES_PASSWORD: nocmon_password
+      POSTGRES_DB: nocmon_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nocmon_user -d nocmon_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build: .
+    container_name: nocmon_backend
+    restart: always
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8001 --reload
+    volumes:
+      - .:/app
+    ports:
+      - "8001:8001"
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://nocmon_user:nocmon_password@db:5432/nocmon_db
+      - SYNC_DATABASE_URL=postgresql+psycopg2://nocmon_user:nocmon_password@db:5432/nocmon_db
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  postgres_data:

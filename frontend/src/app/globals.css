@@ -1,0 +1,48 @@
+@import "leaflet/dist/leaflet.css";
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* ── Animated Dash Flow for Polyline FO Cable Paths ── */
+@keyframes lineFlow {
+  0% {
+    stroke-dashoffset: 24;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+.flow-cable-backbone {
+  stroke-dasharray: 8, 8;
+  animation: lineFlow 0.8s linear infinite;
+}
+
+.flow-cable-distribution {
+  stroke-dasharray: 6, 6;
+  animation: lineFlow 1.2s linear infinite;
+}
+
