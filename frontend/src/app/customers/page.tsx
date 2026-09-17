@@ -168,7 +168,7 @@ export default function CustomersPage() {
         <div className="flex items-center gap-2">
           <button
             onClick={fetchCustomersData}
-            className="p-2 rounded-xl bg-white border border-slate-200/80 hover:bg-slate-50 text-slate-600 transition-colors"
+            className="p-2 rounded-xl bg-white border border-slate-200/80 hover:bg-slate-50 text-slate-600 transition-colors shadow-2xs"
             title="Refresh Data"
           >
             <RefreshCw className={`w-4 h-4 text-orange-500 ${loading ? 'animate-spin' : ''}`} />
@@ -184,43 +184,43 @@ export default function CustomersPage() {
       </div>
 
       {/* ══════════════════════════════════════════════════════════════════
-          1. CARD DAFTAR KLIEN TERDAFTAR ONU DATABASE (Desain 1:1 Gambar Referensi)
+          1. CARD DAFTAR KLIEN TERDAFTAR ONU DATABASE (1:1 Gambar Referensi)
       ════════════════════════════════════════════════════════════════════ */}
-      <div className="bg-white border border-slate-200/90 rounded-3xl p-4 sm:p-6 md:p-8 shadow-xs space-y-4">
+      <div className="bg-white border border-slate-200/90 rounded-3xl p-5 md:p-7 shadow-2xs space-y-4">
         
         {/* HEADER ATAS CARD */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-slate-100/60">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
           <div className="flex items-center gap-2.5">
-            <Database className="w-5 h-5 text-orange-500 shrink-0" />
-            <h1 className="font-extrabold text-slate-900 text-base md:text-lg tracking-tight">
+            <Database className="w-4 h-4 text-orange-500 shrink-0" />
+            <h1 className="font-bold text-slate-800 text-sm sm:text-base tracking-tight">
               Daftar Klien Terdaftar ONU Database
             </h1>
           </div>
 
           <div className="relative w-full sm:w-64">
-            <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" />
+            <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3.5 top-3" />
             <input
               type="text"
               placeholder="Cari SN, nama..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-8 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-orange-500 font-sans transition"
+              className="w-full pl-9 pr-4 py-2 text-xs bg-white border border-slate-200/90 rounded-xl focus:outline-none focus:border-orange-500 font-sans shadow-2xs placeholder:text-slate-400 transition"
             />
           </div>
         </div>
 
         {/* TABEL DATA PELANGGAN ONU (RESPONSIF SEGALA LAYAR HP) */}
-        <div className="overflow-x-auto rounded-2xl border border-slate-200/80">
+        <div className="overflow-x-auto rounded-2xl border border-slate-100">
           <table className="w-full text-left border-collapse min-w-[760px]">
             <thead>
-              <tr className="bg-slate-50/80 border-b border-slate-200/60 font-mono text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                <th className="py-3 px-4">PORT</th>
-                <th className="py-3 px-4">ONU ID</th>
-                <th className="py-3 px-4">NAMA KLIEN</th>
-                <th className="py-3 px-4 text-orange-500 font-bold">PPPOE USERNAME</th>
-                <th className="py-3 px-4">RX OLT</th>
-                <th className="py-3 px-4">RX ONU</th>
-                <th className="py-3 px-4">SERIAL NUMBER</th>
+              <tr className="bg-slate-50/60 border-b border-slate-100 font-mono text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                <th className="py-3.5 px-4 sm:px-6">PORT</th>
+                <th className="py-3.5 px-4 sm:px-6">ONU ID</th>
+                <th className="py-3.5 px-4 sm:px-6">NAMA KLIEN</th>
+                <th className="py-3.5 px-4 sm:px-6 text-orange-500 font-bold">PPPOE USERNAME</th>
+                <th className="py-3.5 px-4 sm:px-6">RX OLT</th>
+                <th className="py-3.5 px-4 sm:px-6">RX ONU</th>
+                <th className="py-3.5 px-4 sm:px-6">SERIAL NUMBER</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-xs font-sans">
@@ -236,16 +236,16 @@ export default function CustomersPage() {
                   const isHighLoss = !isNaN(rxValue) && rxValue < -26.0;
 
                   return (
-                    <tr key={client.id} className="hover:bg-slate-50/80 transition-colors">
-                      <td className="py-3 px-4 font-mono font-bold text-orange-500">{client.port}</td>
-                      <td className="py-3 px-4 font-mono text-slate-500">{client.onuId}</td>
-                      <td className="py-3 px-4 font-bold text-slate-900">{client.name}</td>
-                      <td className="py-3 px-4 font-mono text-slate-500">{client.pppoe}</td>
-                      <td className={`py-3 px-4 font-mono font-bold ${isHighLoss ? 'text-rose-600' : 'text-emerald-600'}`}>
+                    <tr key={client.id} className="hover:bg-slate-50/70 transition-colors">
+                      <td className="py-3.5 px-4 sm:px-6 font-mono font-bold text-orange-500">{client.port}</td>
+                      <td className="py-3.5 px-4 sm:px-6 font-mono text-slate-400">{client.onuId}</td>
+                      <td className="py-3.5 px-4 sm:px-6 font-bold text-slate-900">{client.name}</td>
+                      <td className="py-3.5 px-4 sm:px-6 font-mono text-slate-500">{client.pppoe}</td>
+                      <td className={`py-3.5 px-4 sm:px-6 font-mono font-bold ${isHighLoss ? 'text-rose-600' : 'text-emerald-600'}`}>
                         {client.rxOlt}
                       </td>
-                      <td className="py-3 px-4 font-mono font-bold text-emerald-600">{client.rxOnu}</td>
-                      <td className="py-3 px-4 font-mono font-bold text-orange-600 uppercase">{client.sn}</td>
+                      <td className="py-3.5 px-4 sm:px-6 font-mono font-bold text-emerald-600">{client.rxOnu}</td>
+                      <td className="py-3.5 px-4 sm:px-6 font-mono font-bold text-orange-600 uppercase">{client.sn}</td>
                     </tr>
                   );
                 })
@@ -256,11 +256,11 @@ export default function CustomersPage() {
       </div>
 
       {/* ══════════════════════════════════════════════════════════════════
-          2. CARD INFRASTRUKTUR PELANGGAN (Sesuai Gambar Referensi 1:1)
+          2. CARD INFRASTRUKTUR PELANGGAN (1:1 Gambar Referensi)
       ════════════════════════════════════════════════════════════════════ */}
-      <div className="bg-gradient-to-br from-orange-50/20 via-white to-slate-50 border border-slate-200/90 rounded-3xl p-6 md:p-8 shadow-xs space-y-4">
+      <div className="bg-gradient-to-br from-orange-50/20 via-white to-slate-50 border border-slate-200/90 rounded-3xl p-6 md:p-8 shadow-2xs space-y-4">
         <div>
-          <span className="bg-orange-100/70 border border-orange-200 text-orange-600 font-mono text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider inline-block mb-2">
+          <span className="bg-orange-100/60 border border-orange-200/80 text-orange-600 font-mono text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider inline-block mb-3">
             INFRASTRUKTUR PELANGGAN
           </span>
           <div className="flex items-center gap-2.5 text-lg md:text-xl font-extrabold text-slate-900">
