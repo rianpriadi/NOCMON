@@ -82,19 +82,19 @@ export default function CustomersPage() {
     fetchCustomersData();
   }, []);
 
-  // Merge live backend ONUs with initial reference list if present
-  const displayClients = onus.length > 0
-    ? onus.map((onu, idx) => ({
-        id: onu.id,
-        port: `1/1/${onu.port_number || 1}`,
-        onuId: String(idx + 1),
-        name: onu.name,
-        pppoe: onu.pppoe_username,
-        rxOlt: `${((onu.rx_power || -20) - 4.2).toFixed(2)} dBm`,
-        rxOnu: `${(onu.rx_power || -20).toFixed(2)} dBm`,
-        sn: `ZTEG${String(onu.id).padStart(6, '0')}`,
-      }))
-    : INITIAL_CLIENTS;
+  // Combine reference sample clients matching Image 2 with live backend ONUs
+  const dbClients = onus.map((onu, idx) => ({
+    id: `db-${onu.id}`,
+    port: `1/1/${onu.port_number || 1}`,
+    onuId: String(idx + 10),
+    name: onu.name,
+    pppoe: onu.pppoe_username,
+    rxOlt: `${((onu.rx_power || -20) - 4.2).toFixed(2)} dBm`,
+    rxOnu: `${(onu.rx_power || -20).toFixed(2)} dBm`,
+    sn: `ZTEG${String(onu.id).padStart(6, '0')}`,
+  }));
+
+  const displayClients = [...INITIAL_CLIENTS, ...dbClients];
 
   const filteredClients = displayClients.filter((client) => {
     const q = searchQuery.toLowerCase();
