@@ -16,7 +16,9 @@ import {
   TrendingUp,
   Radio,
   ShieldCheck,
+  Menu,
 } from 'lucide-react';
+import Sidebar from '@/components/layout/Sidebar';
 
 // ── SPARKLINE SVG MINI CHART ─────────────────────────────────────────────────
 function Sparkline({ color, points }: { color: string; points: number[] }) {
@@ -91,6 +93,7 @@ const SFP_DDM = [
 ];
 
 export default function TelemetriPage() {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [tick, setTick] = useState(0);
 
@@ -110,37 +113,51 @@ export default function TelemetriPage() {
       className="min-h-screen bg-[#f8fafc] text-slate-800 p-4 sm:p-6 md:p-8 space-y-6"
       style={{ fontFamily: 'var(--font-outfit, sans-serif)' }}
     >
+      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+
       {/* ── TOP NAV ── */}
-      <div className="flex items-center justify-between">
-        <Link
-          href="/"
-          className="inline-flex items-center gap-2 text-xs font-bold text-slate-600 hover:text-slate-900 bg-white border border-slate-200 hover:bg-slate-50 px-3.5 py-2 rounded-xl shadow-2xs transition-all"
-        >
-          <ArrowLeft className="w-4 h-4 text-slate-500" />
-          Kembali ke Dashboard
-        </Link>
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setSidebarOpen(true)}
+            className="p-2 rounded-xl bg-white text-orange-500 border border-slate-200 hover:bg-slate-50 transition-colors lg:hidden shadow-2xs"
+            aria-label="Toggle Navigation"
+          >
+            <Menu className="w-5 h-5" />
+          </button>
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 text-xs font-bold text-slate-600 hover:text-slate-900 bg-white border border-slate-200 hover:bg-slate-50 px-3.5 py-2 rounded-xl shadow-2xs transition-all"
+          >
+            <ArrowLeft className="w-4 h-4 text-slate-500" />
+            <span className="hidden sm:inline">Kembali ke Dashboard</span>
+            <span className="sm:hidden">Dashboard</span>
+          </Link>
+        </div>
 
         <button
           onClick={handleRefresh}
-          className="inline-flex items-center gap-2 text-xs font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 px-3.5 py-2 rounded-xl shadow-2xs transition-all"
+          className="inline-flex items-center gap-2 text-xs font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 px-3.5 py-2 rounded-xl shadow-2xs transition-all shrink-0"
         >
           <RefreshCw className={`w-3.5 h-3.5 text-orange-500 ${refreshing ? 'animate-spin' : ''}`} />
-          {refreshing ? 'Memperbarui...' : 'Refresh Telemetri'}
+          <span>{refreshing ? 'Memperbarui...' : 'Refresh Telemetri'}</span>
         </button>
       </div>
 
       {/* ══════════════════════════════════════════════════════════════════
           MAIN CARD: POP LATENCY + HOST MONITOR + SFP DDM
       ════════════════════════════════════════════════════════════════════ */}
-      <div className="bg-white border border-slate-200/90 rounded-3xl border-t-[4px] border-t-orange-500 overflow-hidden shadow-xs p-6 md:p-8 space-y-7">
+      <div className="bg-white border border-slate-200/90 rounded-3xl border-t-[4px] border-t-orange-500 overflow-hidden shadow-xs p-4 sm:p-6 md:p-8 space-y-7">
 
         {/* ── SECTION HEADER ── */}
-        <div className="flex items-center gap-2.5">
-          <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
-          <span className="font-mono text-[11px] font-bold text-orange-500 tracking-wider uppercase">
-            POP ACTIVE LATENCY &amp; CORE HARDWARE CPU TELEMETRI
-          </span>
-          <span className="ml-auto text-[10px] font-mono text-slate-400 flex items-center gap-1.5">
+        <div className="flex flex-wrap items-center justify-between gap-2.5">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
+            <span className="font-mono text-[10px] sm:text-[11px] font-bold text-orange-500 tracking-wider uppercase">
+              POP ACTIVE LATENCY &amp; CORE HARDWARE CPU TELEMETRI
+            </span>
+          </div>
+          <span className="text-[10px] font-mono text-slate-400 flex items-center gap-1.5 shrink-0">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
             Live · Auto-refresh 4s
           </span>
@@ -257,10 +274,10 @@ export default function TelemetriPage() {
             {SFP_DDM.map((sfp) => (
               <div
                 key={sfp.label}
-                className="flex items-center justify-between bg-[#f8fafc] border border-slate-200/80 rounded-xl px-4 py-3"
+                className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-2 bg-[#f8fafc] border border-slate-200/80 rounded-xl px-4 py-3"
               >
-                <span className="font-mono text-xs text-slate-600">{sfp.label}</span>
-                <div className="flex items-center gap-2">
+                <span className="font-mono text-xs text-slate-600 truncate">{sfp.label}</span>
+                <div className="flex items-center gap-2 shrink-0">
                   <span className={`font-mono text-sm font-bold ${sfp.ok ? 'text-emerald-600' : 'text-rose-500'}`}>
                     {sfp.power}
                   </span>

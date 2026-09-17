@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Map, Server, Users, Cpu, Radio, Activity, FileText } from 'lucide-react';
+import { LayoutDashboard, Map, Server, Users, Cpu, Radio, Activity, FileText, Terminal } from 'lucide-react';
 
 const menuItems = [
   {
@@ -30,6 +30,11 @@ const menuItems = [
     label: 'Syslog Real-Time',
     href: '/syslog',
     icon: FileText,
+  },
+  {
+    label: 'Remote CLI OLT',
+    href: '/cli',
+    icon: Terminal,
   },
   {
     label: 'Customer ONU',

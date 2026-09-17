@@ -15,9 +15,12 @@ import {
   CheckCircle2,
   Search,
   ShieldCheck,
+  Menu,
 } from 'lucide-react';
+import Sidebar from '@/components/layout/Sidebar';
 
 export default function ZteOltManagementPage() {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'all' | 'dying_gasp' | 'los'>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -44,25 +47,34 @@ export default function ZteOltManagementPage() {
 
   return (
     <div className="min-h-screen bg-[#fafafa] text-slate-800 p-4 sm:p-6 md:p-8 space-y-6" style={{ fontFamily: 'var(--font-outfit, sans-serif)' }}>
+      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       
       {/* ── BAR NAVIGASI ATAS & PANDUAN PENGGUNA ── */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+          <button
+            onClick={() => setSidebarOpen(true)}
+            className="p-2 rounded-xl bg-white text-orange-500 border border-slate-200 hover:bg-slate-50 transition-colors lg:hidden shadow-2xs"
+            aria-label="Toggle Navigation"
+          >
+            <Menu className="w-5 h-5" />
+          </button>
           <Link
             href="/"
             className="inline-flex items-center gap-2 text-xs font-bold text-slate-600 hover:text-slate-900 bg-white border border-slate-200/80 hover:bg-slate-50 px-3.5 py-2 rounded-xl shadow-2xs transition-all"
           >
             <ArrowLeft className="w-4 h-4 text-slate-500" />
-            <span>Kembali ke Dashboard</span>
+            <span className="hidden sm:inline">Kembali ke Dashboard</span>
+            <span className="sm:hidden">Dashboard</span>
           </Link>
           <div className="h-4 w-px bg-slate-200 hidden sm:block" />
-          <span className="text-xs font-medium text-slate-500 hidden sm:flex items-center gap-1.5">
-            <Info className="w-3.5 h-3.5 text-orange-500" />
+          <span className="text-xs font-medium text-slate-500 hidden md:flex items-center gap-1.5">
+            <Info className="w-3.5 h-3.5 text-orange-500 shrink-0" />
             Panduan Awam: Pilih kartu metrik di bawah untuk menyaring status pelanggan mati lampu atau kabel putus.
           </span>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 shrink-0">
           <button
             onClick={handleRefresh}
             className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 px-3.5 py-2 rounded-xl shadow-2xs transition-all"
@@ -313,15 +325,15 @@ export default function ZteOltManagementPage() {
             </p>
           </div>
 
-          <div className="flex items-center gap-2">
-            <div className="relative">
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            <div className="relative w-full sm:w-auto">
               <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" />
               <input
                 type="text"
                 placeholder="Cari nama pelanggan..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-8 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-orange-500 font-sans w-56"
+                className="pl-8 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-orange-500 font-sans w-full sm:w-56"
               />
             </div>
           </div>

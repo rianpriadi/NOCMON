@@ -2,7 +2,8 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Check, Terminal, ChevronRight, Wifi, Copy, Trash2 } from 'lucide-react';
+import { ArrowLeft, Check, Terminal, ChevronRight, Wifi, Copy, Trash2, Menu } from 'lucide-react';
+import Sidebar from '@/components/layout/Sidebar';
 
 // ── DEMO COMMAND RESPONSES ────────────────────────────────────────────────────
 const CMD_RESPONSES: Record<string, string[]> = {
@@ -141,6 +142,7 @@ function lineColor(type: TermLine['type']): string {
 }
 
 export default function CliOltPage() {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [lines, setLines] = useState<TermLine[]>(BOOT_LINES);
   const [input, setInput] = useState('');
   const [history, setHistory] = useState<string[]>([]);
@@ -222,13 +224,26 @@ export default function CliOltPage() {
 
   return (
     <div className="min-h-screen bg-[#f8fafc] text-slate-800 p-4 sm:p-6 md:p-8 space-y-6" style={{ fontFamily: 'var(--font-outfit, sans-serif)' }}>
+      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+
       {/* ── TOP NAV ── */}
-      <div className="flex items-center justify-between">
-        <Link href="/" className="inline-flex items-center gap-2 text-xs font-bold text-slate-600 hover:text-slate-900 bg-white border border-slate-200 hover:bg-slate-50 px-3.5 py-2 rounded-xl shadow-2xs transition-all">
-          <ArrowLeft className="w-4 h-4 text-slate-500" />
-          Kembali ke Dashboard
-        </Link>
-        <span className="inline-flex items-center gap-2 text-xs font-bold text-amber-700 bg-amber-50 border border-amber-200 px-3.5 py-1.5 rounded-full font-mono">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setSidebarOpen(true)}
+            className="p-2 rounded-xl bg-white text-orange-500 border border-slate-200 hover:bg-slate-50 transition-colors lg:hidden shadow-2xs"
+            aria-label="Toggle Navigation"
+          >
+            <Menu className="w-5 h-5" />
+          </button>
+          <Link href="/" className="inline-flex items-center gap-2 text-xs font-bold text-slate-600 hover:text-slate-900 bg-white border border-slate-200 hover:bg-slate-50 px-3.5 py-2 rounded-xl shadow-2xs transition-all">
+            <ArrowLeft className="w-4 h-4 text-slate-500" />
+            <span className="hidden sm:inline">Kembali ke Dashboard</span>
+            <span className="sm:hidden">Dashboard</span>
+          </Link>
+        </div>
+
+        <span className="inline-flex items-center justify-center gap-2 text-xs font-bold text-amber-700 bg-amber-50 border border-amber-200 px-3.5 py-1.5 rounded-full font-mono shrink-0">
           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
           Connected (ZTE C300 · 10.255.0.10)
         </span>
@@ -240,12 +255,12 @@ export default function CliOltPage() {
       <div className="bg-white border border-slate-200/90 rounded-3xl border-t-[4px] border-t-orange-500 overflow-hidden shadow-xs">
 
         {/* Card Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-6 py-4 border-b border-slate-100">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-4 sm:px-6 py-4 border-b border-slate-100">
           <div className="flex items-center gap-2.5">
             <span className="text-orange-500 font-black text-lg leading-none">{'>'}_</span>
             <div>
-              <h1 className="text-sm font-black text-slate-900">Remote CLI OLT Terminal – Super-fast Connection</h1>
-              <p className="text-[11px] text-slate-400 font-mono">Telnet Session · ZTE C300 · OLT-DEMO-A · 10.255.0.10</p>
+              <h1 className="text-xs sm:text-sm font-black text-slate-900">Remote CLI OLT Terminal – Super-fast Connection</h1>
+              <p className="text-[10px] sm:text-[11px] text-slate-400 font-mono">Telnet Session · ZTE C300 · OLT-DEMO-A · 10.255.0.10</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -262,8 +277,8 @@ export default function CliOltPage() {
 
         {/* ── DARK TERMINAL ── */}
         <div
-          className="bg-[#0d1117] font-mono text-[12px] overflow-y-auto cursor-text"
-          style={{ height: 300 }}
+          className="bg-[#0d1117] font-mono text-[12px] overflow-y-auto overflow-x-auto cursor-text"
+          style={{ height: 320 }}
           onClick={() => inputRef.current?.focus()}
         >
           {/* macOS-style title bar */}
@@ -275,17 +290,17 @@ export default function CliOltPage() {
             </div>
             <span className="text-slate-500 text-[10px] ml-2 flex items-center gap-1.5">
               <Terminal className="w-3 h-3" />
-              nocmon — cli@OLT-DEMO-A (ZTE C300) — 80×24
-              <span className="ml-2 text-emerald-400 font-bold flex items-center gap-1">
+              nocmon — cli@OLT-DEMO-A (ZTE C300)
+              <span className="ml-2 text-emerald-400 font-bold hidden sm:inline-flex items-center gap-1">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />CONNECTED
               </span>
             </span>
           </div>
 
           {/* Log Lines */}
-          <div className="p-4 space-y-0.5 leading-5">
+          <div className="p-4 space-y-0.5 leading-5 min-w-[500px]">
             {lines.map(line => (
-              <div key={line.id} className={`whitespace-pre-wrap break-all ${lineColor(line.type)}`}>
+              <div key={line.id} className={`whitespace-pre ${lineColor(line.type)}`}>
                 {line.text}
               </div>
             ))}
@@ -294,16 +309,16 @@ export default function CliOltPage() {
         </div>
 
         {/* ── INSTANT COMMAND BUTTONS ── */}
-        <div className="px-5 py-3 bg-[#161b22] border-t border-slate-700/50 flex flex-wrap items-center gap-2">
+        <div className="px-4 sm:px-5 py-3 bg-[#161b22] border-t border-slate-700/50 flex items-center gap-2 overflow-x-auto max-w-full scrollbar-none">
           <span className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-wider shrink-0">
-            INSTAN COMMANDS:
+            INSTANT:
           </span>
           {INSTANT_CMDS.map(cmd => (
             <button
               key={cmd.label}
               onClick={() => { setInput(cmd.label); execCommand(cmd.label); }}
               title={cmd.desc}
-              className="text-[11px] font-mono font-bold text-teal-300 bg-teal-900/30 hover:bg-teal-800/40 border border-teal-700/40 px-3 py-1 rounded-lg transition-all"
+              className="text-[11px] font-mono font-bold text-teal-300 bg-teal-900/30 hover:bg-teal-800/40 border border-teal-700/40 px-3 py-1 rounded-lg transition-all shrink-0 whitespace-nowrap"
             >
               {cmd.label}
             </button>

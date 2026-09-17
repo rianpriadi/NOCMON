@@ -17,7 +17,9 @@ import {
   Download,
   Check,
   Radio,
+  Menu,
 } from 'lucide-react';
+import Sidebar from '@/components/layout/Sidebar';
 
 // ── DEMO SYSLOG DATA ──────────────────────────────────────────────────────────
 type LogSeverity = 'INFO' | 'WARNING' | 'CRITICAL' | 'ERROR' | 'DEBUG';
@@ -73,6 +75,7 @@ function SeverityBadge({ severity }: { severity: LogSeverity }) {
 }
 
 export default function SyslogPage() {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [logs, setLogs] = useState<LogEntry[]>(DEMO_LOGS);
   const [search, setSearch] = useState('');
   const [severityFilter, setSeverityFilter] = useState<LogSeverity | 'ALL'>('ALL');
@@ -141,27 +144,39 @@ export default function SyslogPage() {
 
   return (
     <div className="min-h-screen bg-[#f8fafc] text-slate-800 p-4 sm:p-6 md:p-8 space-y-6" style={{ fontFamily: 'var(--font-outfit, sans-serif)' }}>
+      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       {/* ── TOP NAV BAR ── */}
-      <div className="flex items-center justify-between">
-        <Link href="/" className="inline-flex items-center gap-2 text-xs font-bold text-slate-600 hover:text-slate-900 bg-white border border-slate-200 hover:bg-slate-50 px-3.5 py-2 rounded-xl shadow-2xs transition-all">
-          <ArrowLeft className="w-4 h-4 text-slate-500" />
-          Kembali ke Dashboard
-        </Link>
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
         <div className="flex items-center gap-2">
-          <span className="flex items-center gap-1.5 text-[11px] font-mono font-bold text-emerald-600 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-xl">
+          <button
+            onClick={() => setSidebarOpen(true)}
+            className="p-2 rounded-xl bg-white text-orange-500 border border-slate-200 hover:bg-slate-50 transition-colors lg:hidden shadow-2xs"
+            aria-label="Toggle Navigation"
+          >
+            <Menu className="w-5 h-5" />
+          </button>
+          <Link href="/" className="inline-flex items-center gap-2 text-xs font-bold text-slate-600 hover:text-slate-900 bg-white border border-slate-200 hover:bg-slate-50 px-3.5 py-2 rounded-xl shadow-2xs transition-all">
+            <ArrowLeft className="w-4 h-4 text-slate-500" />
+            <span className="hidden sm:inline">Kembali ke Dashboard</span>
+            <span className="sm:hidden">Dashboard</span>
+          </Link>
+        </div>
+
+        <div className="flex items-center gap-2 justify-end flex-wrap sm:flex-nowrap">
+          <span className="hidden sm:flex items-center gap-1.5 text-[11px] font-mono font-bold text-emerald-600 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-xl">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
             Server UDP:514 · TCP:1152
           </span>
-          <button onClick={handleDownload} className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 px-3.5 py-2 rounded-xl shadow-2xs transition-all">
+          <button onClick={handleDownload} className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 px-3.5 py-2 rounded-xl shadow-2xs transition-all shrink-0">
             <Download className="w-3.5 h-3.5 text-slate-500" />
-            Export Log
+            <span>Export Log</span>
           </button>
         </div>
       </div>
 
       {/* ── SEVERITY SUMMARY CARDS ── */}
-      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2.5 sm:gap-3">
         {(['CRITICAL','ERROR','WARNING','INFO','DEBUG'] as LogSeverity[]).map(sev => {
           const cfg = SEVERITY_CONFIG[sev];
           const active = severityFilter === sev;
@@ -189,15 +204,15 @@ export default function SyslogPage() {
       <div className="bg-white border border-slate-200/90 rounded-3xl border-t-[4px] border-t-orange-500 overflow-hidden shadow-xs">
 
         {/* Card Header */}
-        <div className="px-6 py-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="px-4 sm:px-6 py-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
           <div className="flex items-center gap-2.5">
             <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
-            <span className="font-mono text-[11px] font-black text-orange-500 tracking-wider uppercase">
+            <span className="font-mono text-[10px] sm:text-[11px] font-black text-orange-500 tracking-wider uppercase">
               SYSLOG RECEIVER STREAM (LIVE LOGGER)
             </span>
           </div>
-          <div className="flex items-center gap-3 text-[11px] font-mono text-slate-400 flex-wrap">
-            <span>Server Port: UDP:514 · TCP:1152</span>
+          <div className="flex items-center gap-3 text-[10px] sm:text-[11px] font-mono text-slate-400 flex-wrap">
+            <span className="hidden sm:inline">Server Port: UDP:514 · TCP:1152</span>
             <span className="bg-slate-100 px-2 py-0.5 rounded-md font-bold text-slate-600">
               {filtered.length} baris ditampilkan
             </span>
@@ -205,7 +220,7 @@ export default function SyslogPage() {
         </div>
 
         {/* Search + Filter Toolbar */}
-        <div className="px-6 py-3 border-b border-slate-100 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+        <div className="px-4 sm:px-6 py-3 border-b border-slate-100 flex flex-col md:flex-row items-stretch md:items-center gap-3">
           <div className="relative flex-1">
             <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
             <input
@@ -217,8 +232,8 @@ export default function SyslogPage() {
             />
           </div>
 
-          <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs">
               <Filter className="w-3.5 h-3.5 text-slate-400" />
               <select
                 value={severityFilter}
@@ -236,26 +251,26 @@ export default function SyslogPage() {
 
             <button
               onClick={() => setPaused(p => !p)}
-              className={`inline-flex items-center gap-1.5 text-xs font-bold px-3.5 py-2 rounded-xl border transition-all ${
+              className={`inline-flex items-center gap-1.5 text-xs font-bold px-3 py-2 rounded-xl border transition-all ${
                 paused
                   ? 'bg-amber-50 border-amber-200 text-amber-700 hover:bg-amber-100'
                   : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
               }`}
             >
               {paused ? <Play className="w-3.5 h-3.5" /> : <Pause className="w-3.5 h-3.5" />}
-              {paused ? 'Resume' : 'Pause'}
+              <span>{paused ? 'Resume' : 'Pause'}</span>
             </button>
 
             <button
               onClick={() => setAutoScroll(a => !a)}
-              className={`inline-flex items-center gap-1.5 text-xs font-bold px-3.5 py-2 rounded-xl border transition-all ${
+              className={`inline-flex items-center gap-1.5 text-xs font-bold px-3 py-2 rounded-xl border transition-all ${
                 autoScroll
                   ? 'bg-emerald-50 border-emerald-200 text-emerald-700'
                   : 'bg-white border-slate-200 text-slate-500'
               }`}
             >
               <RefreshCw className={`w-3.5 h-3.5 ${autoScroll ? 'animate-spin' : ''}`} style={{ animationDuration: '3s' }} />
-              Auto-Scroll
+              <span>Auto-Scroll</span>
             </button>
           </div>
         </div>

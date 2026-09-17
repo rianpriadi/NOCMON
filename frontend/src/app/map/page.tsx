@@ -20,9 +20,11 @@ import {
   Eye,
   EyeOff,
   RefreshCw,
+  Menu,
 } from 'lucide-react';
 import { api } from '@/lib/api';
 import MapWrapper from '@/components/map/MapWrapper';
+import Sidebar from '@/components/layout/Sidebar';
 
 // ─── NODE LEGEND CONFIG ────────────────────────────────────────────────────
 const LEGEND_ITEMS = [
@@ -47,6 +49,7 @@ const LAYER_COUNTS = [
 
 // ─── COMPONENT ─────────────────────────────────────────────────────────────
 export default function GisMapPage() {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showModal,  setShowModal]  = useState(false);
   const [showLegend, setShowLegend] = useState(true);
   const [showLayers, setShowLayers] = useState(true);
@@ -81,6 +84,7 @@ export default function GisMapPage() {
 
   return (
     <div className="min-h-screen bg-[#f0f4f8]" style={{ fontFamily: 'var(--font-outfit, sans-serif)' }}>
+      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       <style>{`
         @keyframes lineFlow {
           0% {
@@ -105,37 +109,44 @@ export default function GisMapPage() {
       {/* ══════════════════════════════════════════════════════════════════
           STICKY TOP HEADER
       ════════════════════════════════════════════════════════════════════ */}
-      <header className="sticky top-0 z-40 bg-white border-b border-slate-200 shadow-sm px-5 py-3">
-        <div className="max-w-screen-2xl mx-auto flex items-center justify-between gap-4">
+      <header className="sticky top-0 z-40 bg-white border-b border-slate-200 shadow-sm px-4 sm:px-5 py-3">
+        <div className="max-w-screen-2xl mx-auto flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
 
           {/* Left: back + title */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5">
+            <button
+              onClick={() => setSidebarOpen(true)}
+              className="p-2 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors lg:hidden shrink-0"
+              aria-label="Toggle Navigation"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
             <Link
               href="/"
-              className="flex items-center gap-1.5 text-[11px] font-semibold text-slate-500 hover:text-slate-800 bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-lg transition-colors"
+              className="flex items-center gap-1.5 text-[11px] font-semibold text-slate-500 hover:text-slate-800 bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-lg transition-colors shrink-0"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
-              Kembali
+              <span>Kembali</span>
             </Link>
 
-            <div className="h-5 w-px bg-slate-200" />
+            <div className="h-5 w-px bg-slate-200 hidden sm:block" />
 
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-sm">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-sm shrink-0">
                 <Map className="w-4 h-4 text-white" />
               </div>
               <div>
-                <h1 className="text-sm font-black text-slate-800 leading-tight">
+                <h1 className="text-xs sm:text-sm font-black text-slate-800 leading-tight">
                   Service Area GIS Map
                 </h1>
-                <p className="text-[10px] text-slate-400 leading-tight">Peta Spasial Fiber Optik · Purbalingga, Jawa Tengah</p>
+                <p className="text-[10px] text-slate-400 leading-tight hidden sm:block">Peta Spasial Fiber Optik · Purbalingga, Jawa Tengah</p>
               </div>
             </div>
           </div>
 
           {/* Right: badge + buttons */}
-          <div className="flex items-center gap-2.5">
-            <span className="hidden sm:inline-flex px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider border border-emerald-400 text-emerald-700 bg-emerald-50 rounded-lg">
+          <div className="flex items-center gap-2 justify-end flex-wrap sm:flex-nowrap">
+            <span className="hidden md:inline-flex px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider border border-emerald-400 text-emerald-700 bg-emerald-50 rounded-lg">
               GPON Topology Layer
             </span>
             <button
@@ -144,7 +155,7 @@ export default function GisMapPage() {
               title="Toggle Legend"
             >
               {showLegend ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
-              <span className="hidden sm:inline">Legend</span>
+              <span>Legend</span>
             </button>
             <button
               onClick={() => setShowLayers(v => !v)}
@@ -152,14 +163,14 @@ export default function GisMapPage() {
               title="Toggle Layers"
             >
               {showLayers ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
-              <span className="hidden sm:inline">Layers</span>
+              <span>Layers</span>
             </button>
             <button
               onClick={() => setShowModal(true)}
-              className="flex items-center gap-1.5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-bold px-3.5 py-2 rounded-xl shadow-sm shadow-emerald-500/20 transition-all text-xs"
+              className="flex items-center gap-1.5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-bold px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl shadow-sm shadow-emerald-500/20 transition-all text-xs shrink-0"
             >
               <Plus className="w-3.5 h-3.5" />
-              Tambah ODP
+              <span>Tambah ODP</span>
             </button>
           </div>
         </div>
@@ -209,7 +220,7 @@ export default function GisMapPage() {
             {/* ── LEGEND OVERLAY – bottom left z-[1000] ── */}
             {showLegend && (
               <div
-                className="absolute bottom-2 left-2 sm:bottom-4 sm:left-4 bg-white/95 backdrop-blur-sm border border-slate-200 rounded-xl shadow-xl p-2.5 sm:p-3.5 max-w-[calc(100%-1rem)] sm:max-w-xs"
+                className="absolute bottom-2 left-2 sm:bottom-4 sm:left-4 bg-white/95 backdrop-blur-sm border border-slate-200 rounded-xl shadow-xl p-2.5 sm:p-3.5 max-w-[calc(100%-1rem)] sm:max-w-xs max-h-[50vh] overflow-y-auto"
                 style={{ zIndex: 1000 }}
               >
                 <div className="flex items-center justify-between mb-2 pb-1 border-b border-slate-100">
